@@ -1,3 +1,5 @@
+English | [Português](./README.pt-BR.md)
+
 # Agent Governance Harness
 
 **Hermetic worktrees, deterministic concurrency, and adversarial gates for autonomous code generation.**

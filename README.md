@@ -112,6 +112,4 @@ MIT — see [`LICENSE`](./LICENSE).
 
 ## About
 
-Maintained by MASS. Issues and discussion around the architecture are welcome; this is published as a reference design, not as a supported product.
-
-<!-- TODO before publishing: replace with the actual public GitHub org/handle this repo ships under. -->
+Maintained by [MASS](https://github.com/contatomasstech). Issues and discussion around the architecture are welcome; this is published as a reference design, not as a supported product.

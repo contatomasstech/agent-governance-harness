@@ -1,0 +1,63 @@
+# ==============================================================================
+# ILLUSTRATIVE TEMPLATE — not a runnable workflow as-is.
+#
+# This documents *where* the adversarial gate from ADR 002 fits relative to a
+# GitHub Actions pipeline: it runs on draft PRs opened by the automated
+# executor, and its only job is to keep the PR in draft until the gate's own
+# process (external to this workflow — see docs/adrs/002-...) has recorded an
+# approval. Wire `Run adversarial gate` up to your actual reviewer process
+# before using this for anything.
+# ==============================================================================
+
+name: PR Audit Gate (template)
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review]
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  adversarial-gate:
+    # Only agent-originated branches go through this gate — a human-authored
+    # PR is already going through normal human review and doesn't need an
+    # automated adversarial pass gating it.
+    if: startsWith(github.head_ref, 'agent/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Run project test suite
+        run: |
+          echo "Replace with your project's real test command."
+          echo "A non-zero exit here should fail this job and leave the PR in draft."
+          exit 0
+
+      - name: Run adversarial gate
+        id: gate
+        run: |
+          echo "Replace this step with an invocation of your independent"
+          echo "adversarial reviewer (see docs/adrs/002-ephemeral-worktree-adversarial-gate.md)."
+          echo "It must produce an unambiguous verdict — this template treats"
+          echo "anything other than a literal 'approved' as a rejection."
+          echo "verdict=approved" >> "$GITHUB_OUTPUT"
+
+      - name: Reject — close the PR without merging
+        if: steps.gate.outputs.verdict != 'approved'
+        run: |
+          gh pr close "${{ github.event.pull_request.number }}" \
+            --comment "Adversarial gate did not approve this change. Closed without merge; branch retained for audit."
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Approve — promote the PR out of draft
+        if: steps.gate.outputs.verdict == 'approved'
+        run: |
+          gh pr ready "${{ github.event.pull_request.number }}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

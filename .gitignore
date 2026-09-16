@@ -1,0 +1,32 @@
+# Secrets & environment configuration — never committed, no exceptions.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+credentials/
+**/*credentials*.json
+**/*secret*.env
+
+# Local tooling / editor / OS noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.local.*
+
+# Dependency artifacts (this repo ships docs + templates, not a runnable app —
+# kept here defensively in case examples/tooling are added later)
+node_modules/
+dist/
+build/
+coverage/
+*.log
+.env.local
+
+# Never allow a real, populated policy/config file to slip in next to the
+# sanitized template — only the canonical, generic example belongs in git.
+templates/policies.local.yaml

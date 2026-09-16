@@ -1,0 +1,60 @@
+# ==============================================================================
+# CANONICAL AGENT RUNTIME POLICY
+# Mode: fail-closed (a deny always wins; nothing is reachable unless it is
+# explicitly listed in allowed_paths AND not matched by denied_paths).
+#
+# IMPORTANT — read before adapting this template to your own policy engine:
+# this file assumes a matcher that resolves each entry to a LITERAL, absolute
+# path (via something like `path.resolve(root, entry)`) and checks whether the
+# candidate file is inside it — it does NOT assume glob support ("**", "*").
+# If your own policy engine's matcher is a literal-prefix check like that
+# (verify by reading its implementation, not by assuming), replace every
+# glob-looking entry below with the real, enumerated literal paths in your
+# repository. Shipping a policy file whose patterns silently never match
+# anything is worse than shipping no policy at all — it looks protected and
+# isn't. This is not a hypothetical: it's the exact mistake this template
+# exists to help you avoid.
+# ==============================================================================
+
+mode: workspace
+
+allowed_actions:
+  - propose_patch
+  - run_tests
+
+# Nothing outside these paths is reachable by the executor, regardless of
+# what denied_paths says. An empty or missing allowed_paths means nothing is
+# reachable at all — fail closed, not fail open.
+allowed_paths:
+  - src/
+  - README.md
+  - package.json
+
+denied_paths:
+  # Secrets & environment configuration.
+  - ".env"
+  - ".env.local"
+  - "secrets/"
+
+  # CI/CD pipelines & automation infrastructure — an agent that can edit its
+  # own gate is not a gate.
+  - ".github/workflows/"
+  - "infra/"
+
+  # Deployment / infrastructure-as-code configuration.
+  - "docker-compose.yml"
+  - "docker-compose.override.yml"
+
+  # Dependency lockfiles — silent, hard-to-review supply-chain risk if an
+  # agent is allowed to touch them incidentally while editing something else.
+  - "package-lock.json"
+  - "pnpm-lock.yaml"
+  - "yarn.lock"
+
+# Actions that still require an explicit, named human confirmation even
+# though allowed_actions permits them in principle — e.g. this repo's own
+# canonical flow never lets the executor merge or delete anything, so those
+# actions aren't even in allowed_actions above; requires_approval_for exists
+# for actions you *do* want available, just not without a human naming
+# themselves as the approver each time.
+requires_approval_for: []

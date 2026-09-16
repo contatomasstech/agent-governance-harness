@@ -1,6 +1,16 @@
-[English](./README.md) | Português
+<div align="center">
 
-# Agent Governance Harness
+# MASS.
+### Agent Governance Harness
+
+_Deterministic Architecture & Runtime Governance for Autonomous Systems_
+
+<p align="center">
+  <a href="./README.md"><b>English</b></a> | <a href="./README.pt-BR.md"><b>Português</b></a>
+</p>
+
+---
+</div>
 
 **Worktrees herméticas, concorrência determinística e gates adversariais para geração autônoma de código.**
 

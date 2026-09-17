@@ -1,6 +1,8 @@
 <div align="center">
 
-# MASS.
+<img src="./docs/assets/mass-logo-dark.svg#gh-dark-mode-only" alt="MASS." width="140">
+<img src="./docs/assets/mass-logo-light.svg#gh-light-mode-only" alt="MASS." width="140">
+
 ### Agent Governance Harness
 
 _Deterministic Architecture & Runtime Governance for Autonomous Systems_
